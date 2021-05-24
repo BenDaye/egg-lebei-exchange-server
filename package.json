@@ -1,0 +1,93 @@
+{
+  "name": "lebei-exchange-server",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "egg": {
+    "typescript": true,
+    "declarations": true
+  },
+  "scripts": {
+    "start": "egg-scripts start --title=egg-server-lebei-exchange-server",
+    "start:daemon": "egg-scripts start --daemon --title=egg-server-lebei-exchange-server",
+    "stop": "egg-scripts stop --title=egg-server-lebei-exchange-server",
+    "dev": "egg-bin dev",
+    "debug": "egg-bin debug",
+    "test-local": "egg-bin test",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "cov": "egg-bin cov",
+    "tsc": "ets && tsc -p tsconfig.json",
+    "ci": "npm run lint && npm run cov && npm run tsc",
+    "autod": "autod",
+    "lint": "eslint . --ext .ts",
+    "clean": "ets clean",
+    "build": "dockposer build registry.cn-shenzhen.aliyuncs.com/zingy9217/egg-lebei-exchange-server:{NPM_PACKAGE_VERSION}",
+    "push": "dockposer push registry.cn-shenzhen.aliyuncs.com/zingy9217/egg-lebei-exchange-server:{NPM_PACKAGE_VERSION}"
+  },
+  "dependencies": {
+    "assert": "^2.0.0",
+    "ccxt": "^1.49.87",
+    "crypto-js": "^4.0.0",
+    "date-fns": "^2.21.1",
+    "egg": "^2.6.1",
+    "egg-cors": "^2.2.3",
+    "egg-mongoose": "^3.3.1",
+    "egg-passport": "^2.1.1",
+    "egg-passport-local": "^1.2.1",
+    "egg-scripts": "^2.6.0",
+    "egg-validate": "^2.0.2",
+    "https-proxy-agent": "^5.0.0",
+    "lru-cache": "^6.0.0",
+    "mongoose-autopopulate": "^0.12.3",
+    "mongoose-hidden": "^1.9.1",
+    "passport-local-mongoose": "^6.1.0",
+    "query-string": "^7.0.0",
+    "socks-proxy-agent": "^5.0.0",
+    "ws": "^7.4.5"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "@types/lru-cache": "^5.1.0",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^7.10.14",
+    "@types/supertest": "^2.0.0",
+    "@types/ws": "^7.4.1",
+    "autod": "^3.0.1",
+    "autod-egg": "^1.1.0",
+    "dockposer": "^0.1.6",
+    "egg-bin": "^4.11.0",
+    "egg-ci": "^1.8.0",
+    "egg-mock": "^3.25.1",
+    "eslint": "^6.8.0",
+    "eslint-config-egg": "^8.1.2",
+    "tslib": "^1.14.1",
+    "typescript": "^3.9.9",
+    "husky": "^4.3.8",
+    "lint-staged": "^10.5.4"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "ci": {
+    "version": "8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BenDaye/egg-lebei-exchange-server"
+  },
+  "eslintIgnore": [
+    "coverage"
+  ],
+  "author": "BenDaye (yypsgdsg@163.com)",
+  "license": "MIT"
+}
