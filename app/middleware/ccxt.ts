@@ -23,7 +23,7 @@ export default function ccxtMiddleware(app: Application): any {
           };
           return;
         }
-        const exchange: ccxt.Exchange = new ccxt[exchangeId]({ agent: app.httpsProxyAgent });
+        const exchange: ccxt.Exchange = new ccxt[exchangeId]({ agent: process.env.EGG_SERVER_ENV === 'local' ? app.httpsProxyAgent : undefined });
         await exchange.loadMarkets();
         app.setCcxt({ ...(app.ccxt || {}), [exchangeId]: exchange });
       }

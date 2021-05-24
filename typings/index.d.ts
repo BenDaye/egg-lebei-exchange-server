@@ -12,9 +12,9 @@ declare module 'egg' {
     mongoose: {
       url?: string,
       options?: mongoose.ConnectionOptions,
-      client?: MongooseConfig,
+      client?: mongoose.MongooseConfig,
       clients?: {
-        [key: string]: MongooseConfig
+        [key: string]: mongoose.MongooseConfig
       }
       plugins?: any[]
       loadModel?: boolean
@@ -26,6 +26,7 @@ declare module 'egg' {
     ccxt: Record<string, Exchange>
     setCcxt: Function
     ccxtCache: LRU<string, any>
+    mongoose: mongoose.Mongoose
   }
 
   interface Context {
