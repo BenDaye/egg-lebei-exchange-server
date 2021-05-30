@@ -1,0 +1,11 @@
+logs
+run
+test
+node_modules
+deploy
+.vscode
+.github
+.git
+.gitignore
+yarn.lock
+yarn-error.log
