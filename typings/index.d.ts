@@ -26,6 +26,7 @@ declare module 'egg' {
     ccxt: Record<string, Exchange>
     setCcxt: Function
     ccxtCache: LRU<string, any>
+    juheCache: LRU<string, any>
     mongoose: mongoose.Mongoose
   }
 

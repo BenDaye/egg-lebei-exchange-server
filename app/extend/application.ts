@@ -12,6 +12,8 @@ let CCXT: Exchanges = {};
 
 const CCXT_CACHE: LRU<string, any> = new LRU<string, any>({ maxAge: 1000 * 2, max: 500 });
 
+const JUHE_CACHE: LRU<string, any> = new LRU<string, any>({ maxAge: 1000 * 60 * 60, max: 500 });
+
 module.exports = {
   get httpsProxyAgent() {
     if (!this[HTTPS_PROXY_AGENT]) {
@@ -33,5 +35,8 @@ module.exports = {
   },
   get ccxtCache(): LRU<string, any> {
     return CCXT_CACHE;
+  },
+  get juheCache(): LRU<string, any> {
+    return JUHE_CACHE;
   },
 };

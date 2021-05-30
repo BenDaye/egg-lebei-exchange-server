@@ -4,8 +4,9 @@ export default (app: Application) => {
   const { controller, router, middleware } = app;
 
   router.get('/', controller.home.index);
+  router.get('/juhe/exchange', middleware.juheCache(app), controller.juhe.getExchangeRate);
 
-  const ccxtMiddleware = [ middleware.ccxt(app), middleware.cache(app) ];
+  const ccxtMiddleware = [ middleware.ccxt(app), middleware.ccxtCache(app) ];
 
   router.get('/ccxt/exchanges', controller.ccxt.exchanges);
 
