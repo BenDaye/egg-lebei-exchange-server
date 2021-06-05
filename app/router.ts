@@ -13,6 +13,8 @@ export default (app: Application) => {
 
   router.get('/ccxt/exchanges', controller.ccxt.exchanges);
 
+  router.get('/ccxt/:exchangeId', ...ccxtMiddleware, controller.ccxt.exchange);
+
   router.get('/ccxt/:exchangeId/time', ...ccxtMiddleware, controller.ccxt.fetchTime);
   router.get('/ccxt/:exchangeId/status', ...ccxtMiddleware, controller.ccxt.fetchStatus);
 
@@ -28,7 +30,7 @@ export default (app: Application) => {
 
   router.get('/ccxt/:exchangeId/ids', ...ccxtMiddleware, controller.ccxt.fetchIds);
 
-  router.get('/ccxt/:exchangeId/orders/:symbol', ...ccxtMiddleware, controller.ccxt.fetchOrderBook);
+  router.get('/ccxt/:exchangeId/orderbook/:symbol', ...ccxtMiddleware, controller.ccxt.fetchOrderBook);
   router.get('/ccxt/:exchangeId/depth/:symbol', ...ccxtMiddleware, controller.ccxt.fetchDepth);
   router.get('/ccxt/:exchangeId/price/:symbol', ...ccxtMiddleware, controller.ccxt.fetchPrice);
 

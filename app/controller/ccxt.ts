@@ -42,6 +42,22 @@ export default class CcxtController extends Controller {
     }
   }
 
+  public async exchange() {
+    try {
+      this.handleSuccess(this.ctx.exchange.describe());
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  public async checkRequiredCredentials() {
+    try {
+      this.handleSuccess(this.ctx.exchange.checkRequiredCredentials());
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
   public async fetchTime() {
     try {
       this.handleSuccess(await this.ctx.exchange.fetchTime());
@@ -138,7 +154,7 @@ export default class CcxtController extends Controller {
   public async fetchDepth() {
     try {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      const result = await this.ctx.exchange.fetchOrderBook(symbol, 10, { group: 1 });
+      const result = await this.ctx.exchange.fetchOrderBook(symbol, 20, { group: 1 });
       const { bids, asks } = result;
       const _bids: [number, number][] = [];
       const _asks: [number, number][] = [];
