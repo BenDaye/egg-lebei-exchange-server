@@ -42,6 +42,14 @@ export default class CcxtController extends Controller {
     }
   }
 
+  public async version() {
+    try {
+      this.handleSuccess(ccxt.version);
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
   public async exchange() {
     try {
       this.handleSuccess(this.ctx.exchange.describe());
@@ -151,10 +159,28 @@ export default class CcxtController extends Controller {
     }
   }
 
+  public async fetchL2OrderBook() {
+    try {
+      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
+      this.handleSuccess(await this.ctx.exchange.fetchL2OrderBook(symbol));
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  public async fetchL3OrderBook() {
+    try {
+      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
+      this.handleSuccess(await this.ctx.exchange.fetchL3OrderBook(symbol));
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
   public async fetchDepth() {
     try {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      const result = await this.ctx.exchange.fetchOrderBook(symbol, 20, { group: 1 });
+      const result = await this.ctx.exchange.fetchOrderBook(symbol);
       const { bids, asks } = result;
       const _bids: [number, number][] = [];
       const _asks: [number, number][] = [];
@@ -193,9 +219,11 @@ export default class CcxtController extends Controller {
   public async fetchTicker() {
     try {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
+      if (this.ctx.query.original?.toString() === 'true') {
+        this.handleSuccess(await this.ctx.exchange.fetchTickers(symbol));
+      }
       const result = await this.ctx.exchange.fetchTickers([ symbol ]);
       this.handleSuccess(result[symbol]);
-      // this.handleSuccess(await this.ctx.exchange.fetchTickers(symbol));
     } catch (err) {
       this.handleError(err);
     }
@@ -203,7 +231,7 @@ export default class CcxtController extends Controller {
 
   public async fetchTickers() {
     try {
-      const symbols = this.ctx.queries.symbol ? this.ctx.queries.symbol.map(symbol => symbol.toString().toUpperCase().replace('_', '/')) : undefined;
+      const symbols = this.ctx.queries.symbol?.length ? this.ctx.queries.symbol.map(symbol => symbol.toString().toUpperCase().replace('_', '/')) : undefined;
       this.handleSuccess(await this.ctx.exchange.fetchTickers(symbols));
     } catch (err) {
       this.handleError(err);

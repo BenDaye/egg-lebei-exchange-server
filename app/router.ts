@@ -12,6 +12,7 @@ export default (app: Application) => {
   const ccxtMiddleware = [ middleware.ccxt(app), middleware.ccxtCache(app) ];
 
   router.get('/ccxt/exchanges', controller.ccxt.exchanges);
+  router.get('/ccxt/version', controller.ccxt.version);
 
   router.get('/ccxt/:exchangeId', ...ccxtMiddleware, controller.ccxt.exchange);
 
@@ -31,6 +32,8 @@ export default (app: Application) => {
   router.get('/ccxt/:exchangeId/ids', ...ccxtMiddleware, controller.ccxt.fetchIds);
 
   router.get('/ccxt/:exchangeId/orderbook/:symbol', ...ccxtMiddleware, controller.ccxt.fetchOrderBook);
+  router.get('/ccxt/:exchangeId/orderbook2/:symbol', ...ccxtMiddleware, controller.ccxt.fetchL2OrderBook);
+  router.get('/ccxt/:exchangeId/orderbook3/:symbol', ...ccxtMiddleware, controller.ccxt.fetchL3OrderBook);
   router.get('/ccxt/:exchangeId/depth/:symbol', ...ccxtMiddleware, controller.ccxt.fetchDepth);
   router.get('/ccxt/:exchangeId/price/:symbol', ...ccxtMiddleware, controller.ccxt.fetchPrice);
 
