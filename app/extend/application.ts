@@ -11,8 +11,9 @@ type Exchanges = Record<string, ccxt.Exchange>;
 let CCXT: Exchanges = {};
 
 const CCXT_CACHE: LRU<string, any> = new LRU<string, any>({ maxAge: 1000 * 2, max: 500 });
-
 const JUHE_CACHE: LRU<string, any> = new LRU<string, any>({ maxAge: 1000 * 60 * 60, max: 500 });
+const COIN_MARKET_CAP_CACHE: LRU<string, any> = new LRU<string, any>({ maxAge: 1000 * 60 * 60, max: 500 });
+
 
 module.exports = {
   get httpsProxyAgent() {
@@ -38,5 +39,8 @@ module.exports = {
   },
   get juheCache(): LRU<string, any> {
     return JUHE_CACHE;
+  },
+  get coinMarketCapCache(): LRU<string, any> {
+    return COIN_MARKET_CAP_CACHE;
   },
 };

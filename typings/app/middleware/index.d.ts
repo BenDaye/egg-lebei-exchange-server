@@ -5,6 +5,7 @@ import 'egg';
 import ExportAuthenticated from '../../../app/middleware/authenticated';
 import ExportCcxt from '../../../app/middleware/ccxt';
 import ExportCcxtCache from '../../../app/middleware/ccxt_cache';
+import ExportCmcCache from '../../../app/middleware/cmc_cache';
 import ExportJuheCache from '../../../app/middleware/juhe_cache';
 
 declare module 'egg' {
@@ -12,6 +13,7 @@ declare module 'egg' {
     authenticated: typeof ExportAuthenticated;
     ccxt: typeof ExportCcxt;
     ccxtCache: typeof ExportCcxtCache;
+    cmcCache: typeof ExportCmcCache;
     juheCache: typeof ExportJuheCache;
   }
 }

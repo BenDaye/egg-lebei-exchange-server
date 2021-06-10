@@ -44,6 +44,10 @@ export default (app: Application) => {
   router.get('/ccxt/:exchangeId/ticker/:symbol', ...ccxtMiddleware, controller.ccxt.fetchTicker);
   router.get('/ccxt/:exchangeId/tickers', ...ccxtMiddleware, controller.ccxt.fetchTickers);
 
+  router.get('/cmc/cryptocurrency/listings/latest', middleware.cmcCache(app), controller.cmc.cryptoCurrencyListingsLatest);
+  router.get('/cmc/cryptocurrency/info', middleware.cmcCache(app), controller.cmc.cryptoCurrencyMetadata);
+  router.get('/cmc/key/info', controller.cmc.keyInfo);
+
   router.get('/v1/account/accounts', controller.account.accounts);
 
   router.get('account_balance', '/v1/account/accounts/:id/balance', controller.account.balance);

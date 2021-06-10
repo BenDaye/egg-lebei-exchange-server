@@ -27,6 +27,7 @@ declare module 'egg' {
     setCcxt: Function
     ccxtCache: LRU<string, any>
     juheCache: LRU<string, any>
+    coinMarketCapCache: LRU<string, any>
     mongoose: mongoose.Mongoose
   }
 

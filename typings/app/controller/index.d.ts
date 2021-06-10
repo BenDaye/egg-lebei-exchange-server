@@ -4,6 +4,7 @@
 import 'egg';
 import ExportAccount from '../../../app/controller/account';
 import ExportCcxt from '../../../app/controller/ccxt';
+import ExportCmc from '../../../app/controller/cmc';
 import ExportHome from '../../../app/controller/home';
 import ExportJuhe from '../../../app/controller/juhe';
 
@@ -11,6 +12,7 @@ declare module 'egg' {
   interface IController {
     account: ExportAccount;
     ccxt: ExportCcxt;
+    cmc: ExportCmc;
     home: ExportHome;
     juhe: ExportJuhe;
   }
