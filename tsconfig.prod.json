@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./output"
+  },
+  "exclude": ["app/public", "app/views", "node_modules*"]
+}

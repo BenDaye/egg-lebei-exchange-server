@@ -10,10 +10,10 @@ COPY ./package.json ./
 
 RUN yarn --production
 
-COPY . ./
+COPY ./output ./
 
-RUN yarn ci
+# RUN yarn ci
 
 EXPOSE 7001
 
-CMD yarn start
+CMD yarn start:docker
