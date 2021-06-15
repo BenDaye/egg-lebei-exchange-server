@@ -1,7 +1,7 @@
 import { Controller } from 'egg';
 
 export default class JuheController extends Controller {
-  public async handleSuccess(data) {
+  private async handleSuccess(data: any) {
     const result = {
       status: 1,
       message: 'success',
@@ -12,10 +12,10 @@ export default class JuheController extends Controller {
     this.ctx.body = result;
     return;
   }
-  public async handleError(e) {
+  private async handleError(err: any) {
     this.ctx.body = {
       status: 0,
-      message: `Error: Unexpected JuHeApi Error ${e.message}`,
+      message: `JuheControllerError: ${err?.message}`,
     };
     return;
   }

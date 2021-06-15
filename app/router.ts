@@ -54,10 +54,11 @@ export default (app: Application) => {
 
   router.get('ws', '/v1/ws/account/sign', controller.account.signWs);
 
-  // const localStrategy = app.passport.authenticate('local');
-  // router.post('/passport/local', localStrategy);
+  const jwt = app.passport.authenticate('jwt', { session: false, successReturnToOrRedirect: undefined });
 
-  // router.get('/logout', controller.account.logout);
+  router.post('/auth/register', controller.passport.register);
+  router.post('/auth/login', controller.passport.login);
+  router.get('/auth/logout', jwt, controller.passport.logout);
 
-  // router.get('/auth/login', controller.account.login);
+  router.get('/user/profile', jwt, controller.passport.profile);
 };

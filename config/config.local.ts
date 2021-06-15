@@ -5,7 +5,8 @@ import MongooseHidden = require('mongoose-hidden');
 
 const mongooseHidden = MongooseHidden({
   hidden: {
-    _id: true, __v: true,
+    _id: true,
+    __v: true,
   },
 });
 
@@ -19,7 +20,7 @@ export default () => {
       },
     },
     mongoose: {
-      url: 'mongodb://huobi:huobi123698745@127.0.0.1:27017',
+      url: 'mongodb://lebei:lebei123698745@127.0.0.1:27017/lebei',
       options: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -29,6 +30,16 @@ export default () => {
       plugins: [ mongooseAutopopulate, mongooseHidden ],
       loadModel: true,
     },
+    passportJwt: {
+      secret: 'local',
+    },
   };
+
+  config.huobiHost = process.env.HUOBI_HOST || 'api.huobi.pro';
+  config.huobiHttpBaseUrl =
+    process.env.HUOBI_HTTP_BASE_URL || 'https://api.huobi.pro';
+  config.huobiWsBaseUrl =
+    process.env.HUOBI_WS_BASE_URL || 'wss://api.huobi.pro/ws';
+
   return config;
 };

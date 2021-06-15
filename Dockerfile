@@ -10,9 +10,9 @@ COPY ./output/ ./
 
 COPY ./package.json ./
 
-RUN yarn --production
+RUN yarn --prod
 
-RUN yarn add tslib
+RUN yarn add tslib --prod
 
 EXPOSE 7001
 

@@ -1,13 +1,11 @@
-import { IBoot } from 'egg';
-// import { Application, IBoot } from 'egg';
-// import assert = require('assert');
-
+import { Application, IBoot } from 'egg';
+import assert = require('assert');
 export default class FooBoot implements IBoot {
-  // private readonly app: Application;
+  private readonly app: Application;
 
-  // constructor(app: Application) {
-  //   this.app = app;
-  // }
+  constructor(app: Application) {
+    this.app = app;
+  }
 
   configWillLoad() {
     // Ready to call configDidLoad,
@@ -30,14 +28,26 @@ export default class FooBoot implements IBoot {
   async didReady() {
     // Worker is ready, can do some things
     // don't need to block the app boot.
-    // this.app.passport.verify(async (ctx, user) => {
-    //   // assert(user.id, 'user.id should exists');
+    this.app.passport.verify(async (ctx, user) => {
+      assert(user.provider, 'user.provider should exists');
+      assert(user.payload, 'user.payload should exists');
 
-    //   const existsUser = await ctx.model.Account.findOne({ _id: user.id });
-    //   console.log(existsUser);
+      const existsUser = await ctx.model.Account.findByUsername(user.payload, false);
+      if (existsUser) return existsUser;
+    });
 
-    //   return user;
-    // });
+    this.app.passport.serializeUser(async (ctx, user) => {
+      return ctx.model.Account.serializeUser()(user, (err, username) => {
+        if (err) return console.error(err);
+        return username;
+      });
+    });
+    this.app.passport.deserializeUser(async (ctx, username) => {
+      return ctx.model.Account.deserializeUser()(username, (err, user) => {
+        if (err) return console.error(err);
+        return user;
+      });
+    });
   }
 
   async serverDidReady() {

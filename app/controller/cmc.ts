@@ -1,17 +1,17 @@
 import { Controller } from 'egg';
 export default class CoinMarketCapController extends Controller {
-  public async handleResponse(res) {
+  private async handleResponse(res: any) {
     const { data, status } = res;
     if (status === 200) return this.handleSuccess(data.data);
 
     this.ctx.body = {
       status,
-      message: `CMC Error: ${data.status.error_message}`,
+      message: `CoinMarketCapControllerError: ${data.status.error_message}`,
     };
     return;
   }
 
-  public async handleSuccess(data) {
+  private async handleSuccess(data: any) {
     const res = {
       status: 1,
       message: 'success',
@@ -23,10 +23,10 @@ export default class CoinMarketCapController extends Controller {
     return;
   }
 
-  public async handleError(err) {
+  private async handleError(err: any) {
     this.ctx.body = {
       status: 0,
-      message: `Error: ${err?.message}`,
+      message: `CoinMarketCapControllerError: ${err?.message}`,
     };
     return;
   }

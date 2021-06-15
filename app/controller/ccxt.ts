@@ -2,7 +2,7 @@ import { Controller } from 'egg';
 import ccxt = require('ccxt');
 
 export default class CcxtController extends Controller {
-  public async handleSuccess(data) {
+  private async handleSuccess(data: any) {
     const result = {
       status: 1,
       message: 'success',
@@ -13,23 +13,24 @@ export default class CcxtController extends Controller {
     this.ctx.body = result;
     return;
   }
-  public async handleError(e) {
-    if (e instanceof ccxt.NetworkError) {
+
+  private async handleError(err: any) {
+    if (err instanceof ccxt.NetworkError) {
       this.ctx.body = {
         status: 700,
-        message: `NetworkError: ${e.message}`,
+        message: `NetworkError: ${err?.message}`,
       };
       return;
-    } else if (e instanceof ccxt.ExchangeError) {
+    } else if (err instanceof ccxt.ExchangeError) {
       this.ctx.body = {
         status: 701,
-        message: `ExchangeError: ${e.message}`,
+        message: `ExchangeError: ${err?.message}`,
       };
       return;
     }
     this.ctx.body = {
       status: 0,
-      message: `Error: ${e.message}`,
+      message: `CcxtControllerError: ${err?.message}`,
     };
     return;
   }

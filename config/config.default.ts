@@ -21,22 +21,8 @@ export default (appInfo: EggAppInfo) => {
     },
   };
 
-  config.huobiHost = process.env.HUOBI_HOST || 'api.huobi.pro';
-  config.huobiHttpBaseUrl = process.env.HUOBI_HTTP_BASE_URL || 'https://api.huobi.pro';
-  config.huobiWsBaseUrl = process.env.HUOBI_WS_BASE_URL || 'wss://api.huobi.pro/ws';
-
-  // config.authenticated = {
-  //   ignore: '/auth/login',
-  // };
-
-  // add your special config in here
-  const bizConfig = {
-    sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
-  };
-
   // the return config will combines to EggAppConfig
   return {
     ...config,
-    ...bizConfig,
   };
 };

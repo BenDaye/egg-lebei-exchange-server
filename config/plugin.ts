@@ -11,17 +11,18 @@ const plugin: EggPlugin = {
     package: 'egg-cors',
   },
   mongoose: {
-    enable: false,
+    enable: true,
     package: 'egg-mongoose',
   },
   passport: {
-    enable: false,
+    enable: true,
     package: 'egg-passport',
   },
-  passportLocal: {
-    enable: false,
-    package: 'egg-passport-local',
+  passportJwt: {
+    enable: true,
+    package: 'egg-passport-jwt',
   },
+
 };
 
 export default plugin;

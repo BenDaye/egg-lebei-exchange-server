@@ -3,10 +3,7 @@ import passportLocalMongoose = require('passport-local-mongoose');
 
 module.exports = (app: Application) => {
   const mongoose = app.mongoose;
-  const AccountSchema = new mongoose.Schema({
-    username: String,
-    password: String,
-  });
+  const AccountSchema = new mongoose.Schema({});
 
   AccountSchema.plugin(passportLocalMongoose);
 
