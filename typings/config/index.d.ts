@@ -1,9 +1,9 @@
-// This file is created by egg-ts-helper@1.25.8
+// This file is created by egg-ts-helper@1.25.9
 // Do not modify this file!!!!!!!!!
 
 import 'egg';
 import { EggAppConfig } from 'egg';
-import ExportConfigDefault from '../../config/config.default';
+import ExportConfigDefault = require('../../config/config.default');
 type ConfigDefault = ReturnType<typeof ExportConfigDefault>;
 type NewEggAppConfig = ConfigDefault;
 declare module 'egg' {

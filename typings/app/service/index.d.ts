@@ -1,4 +1,4 @@
-// This file is created by egg-ts-helper@1.25.8
+// This file is created by egg-ts-helper@1.25.9
 // Do not modify this file!!!!!!!!!
 
 import 'egg';
@@ -6,20 +6,22 @@ type AnyClass = new (...args: any[]) => any;
 type AnyFunc<T = any> = (...args: any[]) => T;
 type CanExportFunc = AnyFunc<Promise<any>> | AnyFunc<IterableIterator<any>>;
 type AutoInstanceType<T, U = T extends CanExportFunc ? T : T extends AnyFunc ? ReturnType<T> : T> = U extends AnyClass ? InstanceType<U> : U;
-import ExportAuth from '../../../app/service/Auth';
-import ExportTest from '../../../app/service/Test';
-import ExportHttpAccount from '../../../app/service/http/Account';
-import ExportWsAccount from '../../../app/service/ws/Account';
+import ExportAuth = require('../../../app/service/auth');
+import ExportTest = require('../../../app/service/test');
+import ExportHuobiHttpAccount = require('../../../app/service/huobi/http/account');
+import ExportHuobiWsAccount = require('../../../app/service/huobi/ws/account');
 
 declare module 'egg' {
   interface IService {
     auth: AutoInstanceType<typeof ExportAuth>;
     test: AutoInstanceType<typeof ExportTest>;
-    http: {
-      account: AutoInstanceType<typeof ExportHttpAccount>;
-    }
-    ws: {
-      account: AutoInstanceType<typeof ExportWsAccount>;
+    huobi: {
+      http: {
+        account: AutoInstanceType<typeof ExportHuobiHttpAccount>;
+      }
+      ws: {
+        account: AutoInstanceType<typeof ExportHuobiWsAccount>;
+      }
     }
   }
 }

@@ -1,11 +1,11 @@
-// This file is created by egg-ts-helper@1.25.8
+// This file is created by egg-ts-helper@1.25.9
 // Do not modify this file!!!!!!!!!
 
 import 'egg';
-import ExportCcxt from '../../../app/middleware/ccxt';
-import ExportCcxtCache from '../../../app/middleware/ccxt_cache';
-import ExportCmcCache from '../../../app/middleware/cmc_cache';
-import ExportJuheCache from '../../../app/middleware/juhe_cache';
+import ExportCcxt = require('../../../app/middleware/ccxt');
+import ExportCcxtCache = require('../../../app/middleware/ccxt_cache');
+import ExportCmcCache = require('../../../app/middleware/cmc_cache');
+import ExportJuheCache = require('../../../app/middleware/juhe_cache');
 
 declare module 'egg' {
   interface IMiddleware {

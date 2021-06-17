@@ -4,7 +4,6 @@
   "description": "",
   "private": true,
   "egg": {
-    "typescript": true,
     "declarations": true
   },
   "scripts": {
@@ -16,11 +15,10 @@
     "test-local": "egg-bin test",
     "test": "npm run lint -- --fix && npm run test-local",
     "cov": "egg-bin cov",
-    "tsc": "ets && tsc -p tsconfig.prod.json",
-    "ci": "npm run lint && npm run cov && npm run tsc",
+    "ci": "npm run lint && npm run cov",
     "autod": "autod",
-    "lint": "eslint . --ext .ts",
-    "clean": "ets clean",
+    "lint": "eslint . --ext .js",
+    "lintfix": "eslint . --ext .js --fix",
     "build": "dockposer build registry.cn-shenzhen.aliyuncs.com/zingy9217/egg-lebei-exchange-server:{NPM_PACKAGE_VERSION}",
     "push": "dockposer push registry.cn-shenzhen.aliyuncs.com/zingy9217/egg-lebei-exchange-server:{NPM_PACKAGE_VERSION}"
   },
@@ -48,14 +46,6 @@
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
-    "@types/jsonwebtoken": "^8.5.1",
-    "@types/lru-cache": "^5.1.0",
-    "@types/mocha": "^2.2.48",
-    "@types/node": "^7.10.14",
-    "@types/passport-local": "^1.0.33",
-    "@types/passport-local-mongoose": "^4.0.14",
-    "@types/supertest": "^2.0.11",
-    "@types/ws": "^7.4.4",
     "autod": "^3.1.1",
     "autod-egg": "^1.1.0",
     "dockposer": "^0.1.6",
@@ -65,12 +55,10 @@
     "eslint": "^6.8.0",
     "eslint-config-egg": "^9.0.0",
     "husky": "^4.3.8",
-    "lint-staged": "^10.5.4",
-    "tslib": "^2.3.0",
-    "typescript": "^4.3.2"
+    "lint-staged": "^10.5.4"
   },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=10.0.0"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --fix"
@@ -82,7 +70,7 @@
     }
   },
   "ci": {
-    "version": "8"
+    "version": "10"
   },
   "repository": {
     "type": "git",

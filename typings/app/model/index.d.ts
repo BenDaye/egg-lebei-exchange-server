@@ -1,8 +1,8 @@
-// This file is created by egg-ts-helper@1.25.8
+// This file is created by egg-ts-helper@1.25.9
 // Do not modify this file!!!!!!!!!
 
 import 'egg';
-import ExportAccount from '../../../app/model/account';
+import ExportAccount = require('../../../app/model/account');
 
 declare module 'egg' {
   interface IModel {
