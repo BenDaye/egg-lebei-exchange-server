@@ -7,23 +7,16 @@ export default function ccxtMiddleware(app: Application): any {
     try {
       const exchangeId: ccxt.ExchangeId = ctx.params.exchangeId;
       if (!exchangeId) {
-        ctx.body = {
-          status: 0,
-          message: `Error: ${exchangeId} is required`,
-        };
+        ctx.onError(new ccxt.NotSupported(`${exchangeId} is required`));
         return;
       }
       if (!app.ccxt[exchangeId]) {
-        // if (!ccxt.exchanges.includes(exchangeId)) ctx.throw(500, `${exchangeId} is not a valid exchangeId`);
         if (!ccxt.exchanges.includes(exchangeId)) {
 
-          ctx.body = {
-            status: 0,
-            message: `Error: ${exchangeId} is not a valid exchangeId`,
-          };
+          ctx.onError(new ccxt.NotSupported(`${exchangeId} is not a valid exchangeId`));
           return;
         }
-        const exchange: ccxt.Exchange = new ccxt[exchangeId]({ agent: process.env.EGG_SERVER_ENV === 'local' ? app.httpsProxyAgent : undefined, enableRateLimit: true });
+        const exchange: ccxt.Exchange = new ccxt[exchangeId]({ agent: app.config.env === 'prod' ? undefined : app.httpsProxyAgent, enableRateLimit: true });
         await exchange.loadMarkets();
         app.setCcxt({ ...(app.ccxt || {}), [exchangeId]: exchange });
       }
@@ -31,10 +24,7 @@ export default function ccxtMiddleware(app: Application): any {
       await app.ccxt[exchangeId].loadMarkets();
       ctx.exchange = app.ccxt[exchangeId];
     } catch (err) {
-      ctx.body = {
-        status: 0,
-        message: `Error: ${err.message}`,
-      };
+      ctx.onError(err);
       return;
     }
 

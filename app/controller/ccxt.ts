@@ -3,35 +3,10 @@ import ccxt = require('ccxt');
 
 export default class CcxtController extends Controller {
   private async handleSuccess(data: any) {
-    const result = {
-      status: 1,
-      message: 'success',
-      data,
-    };
-    const key = this.ctx.url.toLowerCase();
-    this.app.ccxtCache.set(key, result);
-    this.ctx.body = result;
-    return;
-  }
-
-  private async handleError(err: any) {
-    if (err instanceof ccxt.NetworkError) {
-      this.ctx.body = {
-        status: 700,
-        message: `NetworkError: ${err?.message}`,
-      };
-      return;
-    } else if (err instanceof ccxt.ExchangeError) {
-      this.ctx.body = {
-        status: 701,
-        message: `ExchangeError: ${err?.message}`,
-      };
-      return;
-    }
-    this.ctx.body = {
-      status: 0,
-      message: `CcxtControllerError: ${err?.message}`,
-    };
+    const needQuery = [ '/tickers', '/ohlcv', '/market_ids' ].some(v => this.ctx.URL.pathname.includes(v));
+    const key = needQuery ? this.ctx.url.toLowerCase() : this.ctx.URL.pathname.toLowerCase();
+    this.app.ccxtCache.set(key, data);
+    this.ctx.onSuccess(data);
     return;
   }
 
@@ -39,7 +14,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(ccxt.exchanges);
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -47,7 +22,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(ccxt.version);
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -55,7 +30,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(this.ctx.exchange.describe());
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -63,7 +38,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(this.ctx.exchange.checkRequiredCredentials());
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -71,7 +46,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(await this.ctx.exchange.fetchTime());
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -79,7 +54,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(await this.ctx.exchange.fetchStatus());
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -88,7 +63,7 @@ export default class CcxtController extends Controller {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
       this.handleSuccess(this.ctx.exchange.market(symbol));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -96,7 +71,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(this.ctx.exchange.markets);
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -105,7 +80,7 @@ export default class CcxtController extends Controller {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
       this.handleSuccess(this.ctx.exchange.marketId(symbol));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -114,7 +89,7 @@ export default class CcxtController extends Controller {
       const symbols = this.ctx.queries.symbol ? this.ctx.queries.symbol.map(symbol => symbol.toString().toUpperCase().replace('_', '/')) : [];
       this.handleSuccess(this.ctx.exchange.marketIds(symbols));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -123,7 +98,7 @@ export default class CcxtController extends Controller {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
       this.handleSuccess(this.ctx.exchange.symbol(symbol));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -131,7 +106,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(this.ctx.exchange.symbols);
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -139,7 +114,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(this.ctx.exchange.currencies);
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -147,7 +122,7 @@ export default class CcxtController extends Controller {
     try {
       this.handleSuccess(this.ctx.exchange.ids);
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -156,7 +131,7 @@ export default class CcxtController extends Controller {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
       this.handleSuccess(await this.ctx.exchange.fetchOrderBook(symbol));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -165,7 +140,7 @@ export default class CcxtController extends Controller {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
       this.handleSuccess(await this.ctx.exchange.fetchL2OrderBook(symbol));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -174,7 +149,7 @@ export default class CcxtController extends Controller {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
       this.handleSuccess(await this.ctx.exchange.fetchL3OrderBook(symbol));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -196,7 +171,7 @@ export default class CcxtController extends Controller {
       result.asks = _asks;
       this.handleSuccess(result);
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -213,7 +188,7 @@ export default class CcxtController extends Controller {
         spread,
       });
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -226,7 +201,7 @@ export default class CcxtController extends Controller {
       const result = await this.ctx.exchange.fetchTickers([ symbol ]);
       this.handleSuccess(result[symbol]);
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -235,7 +210,7 @@ export default class CcxtController extends Controller {
       const symbols = this.ctx.queries.symbol?.length ? this.ctx.queries.symbol.map(symbol => symbol.toString().toUpperCase().replace('_', '/')) : undefined;
       this.handleSuccess(await this.ctx.exchange.fetchTickers(symbols));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -245,7 +220,7 @@ export default class CcxtController extends Controller {
       const period = this.ctx.query.period || '1m';
       this.handleSuccess(await this.ctx.exchange.fetchOHLCV(symbol, period));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 
@@ -254,7 +229,7 @@ export default class CcxtController extends Controller {
       const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
       this.handleSuccess(await this.ctx.exchange.fetchTrades(symbol));
     } catch (err) {
-      this.handleError(err);
+      this.ctx.onError(err);
     }
   }
 }

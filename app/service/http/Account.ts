@@ -1,5 +1,10 @@
-import { BaseParams, Service } from 'egg';
+import { Service } from 'egg';
 import { HttpClientResponse } from 'urllib/lib';
+
+interface BaseParams {
+  AccessKeyId: string
+  SecretKey: string
+}
 
 export default class Account extends Service {
   public async accounts({ AccessKeyId, SecretKey }: BaseParams): Promise<HttpClientResponse<any>> {

@@ -7,7 +7,7 @@ export default function coinMarketCapCacheMiddleware(app: Application) :any {
     const cache = app.coinMarketCapCache.get(key);
 
     if (cache) {
-      ctx.body = cache;
+      ctx.onSuccess(cache);
       return;
     }
 
