@@ -1,0 +1,23 @@
+{
+  "name": "egg-cache-manager",
+  "version": "0.0.1",
+  "description": "cache-manager plugin for egg",
+  "eggPlugin": {
+    "name": "cacheManager"
+  },
+  "keywords": [
+    "egg",
+    "eggPlugin",
+    "egg-plugin"
+  ],
+  "author": "BenDaye(yypsgdsg@163.com)",
+  "license": "MIT",
+  "dependencies": {
+    "@types/cache-manager": "^3.4.0",
+    "@types/mongoose": "^5.11.97",
+    "cache-manager": "^3.4.4",
+    "cache-manager-mongoose": "^0.0.4",
+    "cache-manager-redis": "^0.6.0",
+    "mongoose": "^5.12.14"
+  }
+}

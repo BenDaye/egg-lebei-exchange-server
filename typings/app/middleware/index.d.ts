@@ -3,15 +3,17 @@
 
 import 'egg';
 import ExportCcxt = require('../../../app/middleware/ccxt');
-import ExportCcxtCache = require('../../../app/middleware/ccxt_cache');
-import ExportCmcCache = require('../../../app/middleware/cmc_cache');
-import ExportJuheCache = require('../../../app/middleware/juhe_cache');
+import ExportCacheCcxt = require('../../../app/middleware/cache/ccxt');
+import ExportCacheCmc = require('../../../app/middleware/cache/cmc');
+import ExportCacheJuhe = require('../../../app/middleware/cache/juhe');
 
 declare module 'egg' {
   interface IMiddleware {
     ccxt: typeof ExportCcxt;
-    ccxtCache: typeof ExportCcxtCache;
-    cmcCache: typeof ExportCmcCache;
-    juheCache: typeof ExportJuheCache;
+    cache: {
+      ccxt: typeof ExportCacheCcxt;
+      cmc: typeof ExportCacheCmc;
+      juhe: typeof ExportCacheJuhe;
+    }
   }
 }

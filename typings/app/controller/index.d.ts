@@ -9,6 +9,7 @@ import ExportCmc = require('../../../app/controller/cmc');
 import ExportHome = require('../../../app/controller/home');
 import ExportJuhe = require('../../../app/controller/juhe');
 import ExportPassport = require('../../../app/controller/passport');
+import ExportTest = require('../../../app/controller/test');
 
 declare module 'egg' {
   interface IController {
@@ -19,5 +20,6 @@ declare module 'egg' {
     home: ExportHome;
     juhe: ExportJuhe;
     passport: ExportPassport;
+    test: ExportTest;
   }
 }

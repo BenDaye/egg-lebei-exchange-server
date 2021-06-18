@@ -8,15 +8,17 @@ module.exports = app => {
 
   router.get('HOME', '/', controller.home.index);
 
+  router.get('TEST', '/test/cache', controller.test.cacheManager);
+
   router.resources('CACHE', '/cache', controller.cache);
 
-  router.get('JUHE_EXCHANGE_QUERY', '/juhe/exchange/query', middleware.juheCache({}, app), controller.juhe.getExchangeQuery);
-  router.get('JUHE_EXCHANGE_LIST', '/juhe/exchange/list', middleware.juheCache({}, app), controller.juhe.getExchangeList);
-  router.get('JUHE_EXCHANGE_CURRENCY', '/juhe/exchange/currency', middleware.juheCache({}, app), controller.juhe.getExchangeCurrency);
+  router.get('JUHE_EXCHANGE_QUERY', '/juhe/exchange/query', middleware.cache.juhe({}, app), controller.juhe.getExchangeQuery);
+  router.get('JUHE_EXCHANGE_LIST', '/juhe/exchange/list', middleware.cache.juhe({}, app), controller.juhe.getExchangeList);
+  router.get('JUHE_EXCHANGE_CURRENCY', '/juhe/exchange/currency', middleware.cache.juhe({}, app), controller.juhe.getExchangeCurrency);
 
   const ccxtMiddleware = [
     middleware.ccxt({}, app),
-    middleware.ccxtCache({}, app),
+    middleware.cache.ccxt({}, app),
   ];
 
   router.get('CCXT_EXCHANGES', '/ccxt/exchanges', controller.ccxt.exchanges);
@@ -52,9 +54,9 @@ module.exports = app => {
   router.get('CCXT_EXCHANGE_ID_TICKER_SYMBOL', '/ccxt/:exchangeId/ticker/:symbol', ...ccxtMiddleware, controller.ccxt.fetchTicker);
   router.get('CCXT_EXCHANGE_ID_TICKERS', '/ccxt/:exchangeId/tickers', ...ccxtMiddleware, controller.ccxt.fetchTickers);
 
-  router.get('CMC_CRYPTOCURRENCY_LISTINGS_LATEST', '/cmc/cryptocurrency/listings/latest', middleware.cmcCache({}, app), controller.cmc.cryptoCurrencyListingsLatest);
-  router.get('CMC_CRYPTOCURRENCY_INFO', '/cmc/cryptocurrency/info', middleware.cmcCache({}, app), controller.cmc.cryptoCurrencyMetadata);
-  router.get('CMC_KEY_INFO', '/cmc/key/info', controller.cmc.keyInfo);
+  router.get('CMC_CRYPTOCURRENCY_LISTINGS_LATEST', '/cmc/cryptocurrency/listings/latest', middleware.cache.cmc({}, app), controller.cmc.cryptoCurrencyListingsLatest);
+  router.get('CMC_CRYPTOCURRENCY_INFO', '/cmc/cryptocurrency/info', middleware.cache.cmc({}, app), controller.cmc.cryptoCurrencyMetadata);
+  router.get('CMC_KEY_INFO', '/cmc/key/info', middleware.cache.cmc({}, app), controller.cmc.keyInfo);
 
   // router.get('/v1/account/accounts', controller.account.accounts);
 

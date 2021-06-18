@@ -4,17 +4,25 @@ const Controller = require('egg').Controller;
 const ccxt = require('ccxt');
 
 class CcxtController extends Controller {
-  async handleSuccess(data) {
-    const needQuery = [ '/tickers', '/ohlcv', '/market_ids' ].some(v => this.ctx.URL.pathname.includes(v));
-    const key = needQuery ? this.ctx.url.toLowerCase() : this.ctx.URL.pathname.toLowerCase();
-    this.app.ccxtCache.set(key, data);
-    this.ctx.onSuccess(data);
-    return;
+  getSymbol() {
+    return this.ctx.params.symbol.toUpperCase().replace('_', '/');
+  }
+
+  getSymbols() {
+    return this.ctx.queries.symbol
+      ? this.ctx.queries.symbol.map(symbol =>
+        symbol.toUpperCase().replace('_', '/')
+      )
+      : undefined;
+  }
+
+  getCacheKey(pathname = true) {
+    return pathname ? this.ctx.URL.pathname.toLowerCase() : this.ctx.url.toLowerCase();
   }
 
   async exchanges() {
     try {
-      this.handleSuccess(ccxt.exchanges);
+      this.ctx.onSuccess(ccxt.exchanges);
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -22,7 +30,7 @@ class CcxtController extends Controller {
 
   async version() {
     try {
-      this.handleSuccess(ccxt.version);
+      this.ctx.onSuccess(ccxt.version);
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -30,7 +38,11 @@ class CcxtController extends Controller {
 
   async exchange() {
     try {
-      this.handleSuccess(this.ctx.exchange.describe());
+      const cacheKey = this.getCacheKey();
+      const getDataFunction = () => this.service.ccxt.exchange();
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -38,7 +50,11 @@ class CcxtController extends Controller {
 
   async checkRequiredCredentials() {
     try {
-      this.handleSuccess(this.ctx.exchange.checkRequiredCredentials());
+      const cacheKey = this.getCacheKey();
+      const getDataFunction = () => this.service.ccxt.checkRequiredCredentials();
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -46,7 +62,11 @@ class CcxtController extends Controller {
 
   async fetchTime() {
     try {
-      this.handleSuccess(await this.ctx.exchange.fetchTime());
+      const cacheKey = this.getCacheKey();
+      const getDataFunction = async () => await this.service.ccxt.fetchTime();
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -54,7 +74,11 @@ class CcxtController extends Controller {
 
   async fetchStatus() {
     try {
-      this.handleSuccess(await this.ctx.exchange.fetchStatus());
+      const cacheKey = this.getCacheKey();
+      const getDataFunction = async () => await this.service.ccxt.fetchStatus();
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -62,8 +86,13 @@ class CcxtController extends Controller {
 
   async fetchMarket() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      this.handleSuccess(this.ctx.exchange.market(symbol));
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchMarket(symbol);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -71,7 +100,11 @@ class CcxtController extends Controller {
 
   async fetchMarkets() {
     try {
-      this.handleSuccess(this.ctx.exchange.markets);
+      const cacheKey = this.getCacheKey();
+      const getDataFunction = () => this.service.ccxt.fetchMarkets();
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -79,8 +112,12 @@ class CcxtController extends Controller {
 
   async fetchMarketId() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      this.handleSuccess(this.ctx.exchange.marketId(symbol));
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = () => this.service.ccxt.marketId(symbol);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -88,8 +125,12 @@ class CcxtController extends Controller {
 
   async fetchMarketIds() {
     try {
-      const symbols = this.ctx.queries.symbol ? this.ctx.queries.symbol.map(symbol => symbol.toString().toUpperCase().replace('_', '/')) : [];
-      this.handleSuccess(this.ctx.exchange.marketIds(symbols));
+      const cacheKey = this.getCacheKey(false);
+      const symbols = this.getSymbols() || [];
+      const getDataFunction = () => this.service.ccxt.marketIds(symbols);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -97,8 +138,12 @@ class CcxtController extends Controller {
 
   async fetchSymbol() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      this.handleSuccess(this.ctx.exchange.symbol(symbol));
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = () => this.service.ccxt.fetchSymbol(symbol);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -106,7 +151,11 @@ class CcxtController extends Controller {
 
   async fetchSymbols() {
     try {
-      this.handleSuccess(this.ctx.exchange.symbols);
+      const cacheKey = this.getCacheKey();
+      const getDataFunction = () => this.service.ccxt.fetchSymbols();
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -114,7 +163,11 @@ class CcxtController extends Controller {
 
   async fetchCurrencies() {
     try {
-      this.handleSuccess(this.ctx.exchange.currencies);
+      const cacheKey = this.getCacheKey();
+      const getDataFunction = () => this.service.ccxt.fetchCurrencies();
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -122,7 +175,11 @@ class CcxtController extends Controller {
 
   async fetchIds() {
     try {
-      this.handleSuccess(this.ctx.exchange.ids);
+      const cacheKey = this.getCacheKey();
+      const getDataFunction = () => this.service.ccxt.fetchIds();
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -130,8 +187,13 @@ class CcxtController extends Controller {
 
   async fetchOrderBook() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      this.handleSuccess(await this.ctx.exchange.fetchOrderBook(symbol));
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchOrderBook(symbol);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -139,8 +201,13 @@ class CcxtController extends Controller {
 
   async fetchL2OrderBook() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      this.handleSuccess(await this.ctx.exchange.fetchL2OrderBook(symbol));
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchL2OrderBook(symbol);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -148,8 +215,13 @@ class CcxtController extends Controller {
 
   async fetchL3OrderBook() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      this.handleSuccess(await this.ctx.exchange.fetchL3OrderBook(symbol));
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchL3OrderBook(symbol);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -157,21 +229,13 @@ class CcxtController extends Controller {
 
   async fetchDepth() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      const result = await this.ctx.exchange.fetchOrderBook(symbol);
-      const { bids, asks } = result;
-      const _bids = [];
-      const _asks = [];
-      for (const bid of bids)
-        _bids.push(bids.filter(v => v[0] <= bid[0]).reduce((p, c) => [ bid[0], c[1] + p[1] ]));
-
-      for (const ask of asks)
-        _asks.push(asks.filter(v => v[0] <= ask[0]).reduce((p, c) => [ ask[0], c[1] + p[1] ]));
-
-
-      result.bids = _bids;
-      result.asks = _asks;
-      this.handleSuccess(result);
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchDepth(symbol);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -179,16 +243,13 @@ class CcxtController extends Controller {
 
   async fetchPrice() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      const { bids, asks } = await this.ctx.exchange.fetchOrderBook(symbol);
-      const bid = bids.length ? bids[0][0] : undefined;
-      const ask = asks.length ? asks[0][0] : undefined;
-      const spread = (bid && ask) ? ask - bid : undefined;
-      this.handleSuccess({
-        bid,
-        ask,
-        spread,
-      });
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchPrice(symbol);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -196,12 +257,16 @@ class CcxtController extends Controller {
 
   async fetchTicker() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      if (this.ctx.query.original.toString() === 'true')
-        this.handleSuccess(await this.ctx.exchange.fetchTickers(symbol));
-
-      const result = await this.ctx.exchange.fetchTickers([ symbol ]);
-      this.handleSuccess(result[symbol]);
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchTicker(
+          symbol, this.ctx.query.original &&
+            this.ctx.query.original.toString() === 'true'
+        );
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -209,8 +274,13 @@ class CcxtController extends Controller {
 
   async fetchTickers() {
     try {
-      const symbols = this.ctx.queries.symbol.length ? this.ctx.queries.symbol.map(symbol => symbol.toString().toUpperCase().replace('_', '/')) : undefined;
-      this.handleSuccess(await this.ctx.exchange.fetchTickers(symbols));
+      const cacheKey = this.getCacheKey(false);
+      const symbols = this.getSymbols();
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchTickers(symbols);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -218,9 +288,15 @@ class CcxtController extends Controller {
 
   async fetchOHLCV() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
+      const cacheKey = this.getCacheKey(false);
+      const symbol = this.getSymbol();
       const period = this.ctx.query.period || '1m';
-      this.handleSuccess(await this.ctx.exchange.fetchOHLCV(symbol, period));
+
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchOHLCV(symbol, period);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -228,8 +304,13 @@ class CcxtController extends Controller {
 
   async fetchTrades() {
     try {
-      const symbol = this.ctx.params.symbol.toString().toUpperCase().replace('_', '/');
-      this.handleSuccess(await this.ctx.exchange.fetchTrades(symbol));
+      const cacheKey = this.getCacheKey();
+      const symbol = this.getSymbol();
+      const getDataFunction = async () =>
+        await this.service.ccxt.fetchTrades(symbol);
+      this.ctx.onSuccess(
+        await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2)
+      );
     } catch (err) {
       this.ctx.onError(err);
     }

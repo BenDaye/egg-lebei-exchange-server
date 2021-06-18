@@ -10,22 +10,30 @@ module.exports = (options, app) => {
         ctx.onError(new ccxt.NotSupported(`${exchangeId} is required`));
         return;
       }
-      if (!app.ccxt[exchangeId]) {
-        if (!ccxt.exchanges.includes(exchangeId)) {
-          ctx.onError(new ccxt.NotSupported(`${exchangeId} is not a valid exchangeId`));
-          return;
-        }
-        const exchange = new ccxt[exchangeId]({ agent: app.config.env === 'prod' ? undefined : app.httpsProxyAgent, enableRateLimit: true });
-        await exchange.loadMarkets();
-        app.setCcxt({ ...(app.ccxt || {}), [exchangeId]: exchange });
+      if (!ccxt.exchanges.includes(exchangeId)) {
+        ctx.onError(
+          new ccxt.NotSupported(`${exchangeId} is not a valid exchangeId`)
+        );
+        return;
       }
 
-      await app.ccxt[exchangeId].loadMarkets();
-      ctx.exchange = app.ccxt[exchangeId];
+      ctx.exchange = await app.cacheManager
+        .get('memory')
+        .wrap(`ccxt_${exchangeId}`, () => {
+          return new Promise(async resolve => {
+            const _exchange = new ccxt[exchangeId]({
+              agent:
+                app.config.env === 'prod' ? undefined : app.httpsProxyAgent,
+              enableRateLimit: true,
+            });
+            await _exchange.loadMarkets();
+            resolve(_exchange);
+          });
+        });
+
+      await next();
     } catch (err) {
       return ctx.onError(err);
     }
-
-    await next();
   };
 };

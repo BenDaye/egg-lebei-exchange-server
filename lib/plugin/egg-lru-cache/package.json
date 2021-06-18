@@ -1,0 +1,19 @@
+{
+  "name": "egg-lru-cache",
+  "version": "0.0.1",
+  "description": "lru-cache plugin for egg",
+  "eggPlugin": {
+    "name": "lruCache"
+  },
+  "keywords": [
+    "egg",
+    "eggPlugin",
+    "egg-plugin"
+  ],
+  "author": "BenDaye(yypsgdsg@163.com)",
+  "license": "MIT",
+  "dependencies": {
+    "@types/lru-cache": "^5.1.0",
+    "lru-cache": "^6.0.0"
+  }
+}
