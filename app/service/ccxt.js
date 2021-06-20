@@ -19,8 +19,8 @@ class CcxtService extends Service {
     return this.ctx.exchange.fetchStatus();
   }
 
-  async fetchMarket(symbol) {
-    await this.ctx.exchange.market(symbol);
+  fetchMarket(symbol) {
+    return this.ctx.exchange.market(symbol);
   }
 
   fetchMarkets() {

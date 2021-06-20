@@ -67,4 +67,7 @@ module.exports = {
         return obj;
       }, {});
   },
+  getCacheKey(pathname = true) {
+    return pathname ? this.ctx.URL.pathname.toLowerCase() : this.ctx.url.toLowerCase();
+  },
 };

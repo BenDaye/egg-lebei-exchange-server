@@ -4,20 +4,18 @@ const Controller = require('egg').Controller;
 const ccxt = require('ccxt');
 
 class CcxtController extends Controller {
-  getSymbol() {
-    return this.ctx.params.symbol.toUpperCase().replace('_', '/');
+  getSymbol(symbol) {
+    const _symbol = symbol || this.ctx.params.symbol;
+    return _symbol.toUpperCase().replace('_', '/');
   }
 
-  getSymbols() {
-    return this.ctx.queries.symbol
-      ? this.ctx.queries.symbol.map(symbol =>
-        symbol.toUpperCase().replace('_', '/')
-      )
+  getSymbols(symbols) {
+    const _symbols = symbols || this.ctx.queries.symbol;
+    if (!Array.isArray(_symbols)) throw new Error(`${_symbols} can not covert to an valid array`);
+
+    return _symbols
+      ? _symbols.map(this.getSymbol)
       : undefined;
-  }
-
-  getCacheKey(pathname = true) {
-    return pathname ? this.ctx.URL.pathname.toLowerCase() : this.ctx.url.toLowerCase();
   }
 
   async exchanges() {
@@ -38,7 +36,7 @@ class CcxtController extends Controller {
 
   async exchange() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.ccxt.exchange();
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
       this.ctx.onSuccess(data);
@@ -49,7 +47,7 @@ class CcxtController extends Controller {
 
   async checkRequiredCredentials() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.ccxt.checkRequiredCredentials();
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
       this.ctx.onSuccess(data);
@@ -60,7 +58,7 @@ class CcxtController extends Controller {
 
   async fetchTime() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.ccxt.fetchTime();
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
       this.ctx.onSuccess(data);
@@ -71,7 +69,7 @@ class CcxtController extends Controller {
 
   async fetchStatus() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.ccxt.fetchStatus();
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
       this.ctx.onSuccess(data);
@@ -82,7 +80,7 @@ class CcxtController extends Controller {
 
   async fetchMarket() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.fetchMarket(symbol);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -94,7 +92,7 @@ class CcxtController extends Controller {
 
   async fetchMarkets() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.ccxt.fetchMarkets();
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
       this.ctx.onSuccess(data);
@@ -105,7 +103,7 @@ class CcxtController extends Controller {
 
   async fetchMarketId() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.marketId(symbol);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -117,7 +115,7 @@ class CcxtController extends Controller {
 
   async fetchMarketIds() {
     try {
-      const cacheKey = this.getCacheKey(false);
+      const cacheKey = this.ctx.helper.getCacheKey(false);
       const symbols = this.getSymbols() || [];
       const getDataFunction = () => this.service.ccxt.marketIds(symbols);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -129,7 +127,7 @@ class CcxtController extends Controller {
 
   async fetchSymbol() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.fetchSymbol(symbol);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -141,7 +139,7 @@ class CcxtController extends Controller {
 
   async fetchSymbols() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.ccxt.fetchSymbols();
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
       this.ctx.onSuccess(data);
@@ -152,7 +150,7 @@ class CcxtController extends Controller {
 
   async fetchCurrencies() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.ccxt.fetchCurrencies();
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
       this.ctx.onSuccess(data);
@@ -163,7 +161,7 @@ class CcxtController extends Controller {
 
   async fetchIds() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.ccxt.fetchIds();
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
       this.ctx.onSuccess(data);
@@ -174,7 +172,7 @@ class CcxtController extends Controller {
 
   async fetchOrderBook() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.fetchOrderBook(symbol);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -186,7 +184,7 @@ class CcxtController extends Controller {
 
   async fetchL2OrderBook() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.fetchL2OrderBook(symbol);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -198,7 +196,7 @@ class CcxtController extends Controller {
 
   async fetchL3OrderBook() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.fetchL3OrderBook(symbol);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -210,7 +208,7 @@ class CcxtController extends Controller {
 
   async fetchDepth() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.fetchDepth(symbol);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -222,7 +220,7 @@ class CcxtController extends Controller {
 
   async fetchPrice() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.fetchPrice(symbol);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -234,7 +232,7 @@ class CcxtController extends Controller {
 
   async fetchTicker() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.fetchTicker(
         symbol, this.ctx.query.original &&
@@ -249,7 +247,7 @@ class CcxtController extends Controller {
 
   async fetchTickers() {
     try {
-      const cacheKey = this.getCacheKey(false);
+      const cacheKey = this.ctx.helper.getCacheKey(false);
       const symbols = this.getSymbols();
       const getDataFunction = () => this.service.ccxt.fetchTickers(symbols);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);
@@ -261,7 +259,7 @@ class CcxtController extends Controller {
 
   async fetchOHLCV() {
     try {
-      const cacheKey = this.getCacheKey(false);
+      const cacheKey = this.ctx.helper.getCacheKey(false);
       const symbol = this.getSymbol();
       const period = this.ctx.query.period || '1m';
       const getDataFunction = () => this.service.ccxt.fetchOHLCV(symbol, period);
@@ -274,7 +272,7 @@ class CcxtController extends Controller {
 
   async fetchTrades() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const symbol = this.getSymbol();
       const getDataFunction = () => this.service.ccxt.fetchTrades(symbol);
       const data = await this.service.cache.getFromCtx(cacheKey, getDataFunction, 2);

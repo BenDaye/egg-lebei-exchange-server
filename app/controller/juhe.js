@@ -3,13 +3,9 @@
 const Controller = require('egg').Controller;
 
 class JuheController extends Controller {
-  getCacheKey(pathname = true) {
-    return pathname ? this.ctx.URL.pathname.toLowerCase() : this.ctx.url.toLowerCase();
-  }
-
   async getExchangeQuery() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.juhe.getExchangeQuery();
       const res = await this.service.cache.getFromCtx(cacheKey, getDataFunction);
       this.ctx.onSuccess(res);
@@ -19,7 +15,7 @@ class JuheController extends Controller {
   }
   async getExchangeList() {
     try {
-      const cacheKey = this.getCacheKey();
+      const cacheKey = this.ctx.helper.getCacheKey();
       const getDataFunction = () => this.service.juhe.getExchangeList();
       const res = await this.service.cache.getFromCtx(cacheKey, getDataFunction);
       this.ctx.onSuccess(res);
@@ -29,7 +25,7 @@ class JuheController extends Controller {
   }
   async getExchangeCurrency() {
     try {
-      const cacheKey = this.getCacheKey(false);
+      const cacheKey = this.ctx.helper.getCacheKey(false);
       const getDataFunction = () => this.service.juhe.getExchangeCurrency();
       const res = await this.service.cache.getFromCtx(cacheKey, getDataFunction);
       this.ctx.onSuccess(res);
