@@ -59,12 +59,14 @@ module.exports = () => {
             },
           },
           ttl: 2,
-          auth: 'cache:cache123698745',
+          auth: process.env.CACHE_MONGOOSE_AUTH,
+          host: 'mongodb',
+          db: 'lebei',
         },
         redisCcxt: {
           store: 'redis',
           db: 0,
-          port: 6379,
+          host: 'redis',
           ttl: 2,
         },
         mongooseCMC: {
@@ -75,7 +77,9 @@ module.exports = () => {
               collection: 'cache_cmc',
             },
           },
-          auth: 'cache:cache123698745',
+          auth: process.env.CACHE_MONGOOSE_AUTH,
+          host: 'mongodb',
+          db: 'lebei',
         },
         mongooseJuhe: {
           store: 'mongoose',
@@ -85,7 +89,9 @@ module.exports = () => {
               collection: 'cache_juhe',
             },
           },
-          auth: 'cache:cache123698745',
+          auth: process.env.CACHE_MONGOOSE_AUTH,
+          host: 'mongodb',
+          db: 'lebei',
         },
         memory: {
           store: 'memory',
@@ -94,9 +100,6 @@ module.exports = () => {
       default: {
         ttl: 60 * 60,
         max: 500,
-        db: 'lebei',
-        host: 'localhost',
-        port: 27017,
       },
       app: true,
     },

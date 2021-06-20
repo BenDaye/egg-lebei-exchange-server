@@ -26,7 +26,8 @@ class JuheController extends Controller {
   async getExchangeCurrency() {
     try {
       const cacheKey = this.ctx.helper.getCacheKey(false);
-      const getDataFunction = () => this.service.juhe.getExchangeCurrency();
+      const { from, to } = this.ctx.query;
+      const getDataFunction = () => this.service.juhe.getExchangeCurrency(from, to);
       const res = await this.service.cache.getFromCtx(cacheKey, getDataFunction);
       this.ctx.onSuccess(res);
     } catch (err) {
