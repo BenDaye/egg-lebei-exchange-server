@@ -17,26 +17,22 @@ class CmcService extends Service {
     sort = 'date_added',
     sort_dir = 'asc',
   }) {
-    try {
-      const res = await this.ctx.curl(
-        'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', {
-          data: {
-            start,
-            limit,
-            convert,
-            sort,
-            sort_dir,
-          },
-          dataAsQueryString: true,
-          headers: {
-            'X-CMC_PRO_API_KEY': process.env.CMC_PRO_API_KEY,
-          },
-        }
-      );
-      return this.handleResponse(res);
-    } catch (err) {
-      throw err;
-    }
+    const res = await this.ctx.curl(
+      'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', {
+        data: {
+          start,
+          limit,
+          convert,
+          sort,
+          sort_dir,
+        },
+        dataAsQueryString: true,
+        headers: {
+          'X-CMC_PRO_API_KEY': process.env.CMC_PRO_API_KEY,
+        },
+      }
+    );
+    return this.handleResponse(res);
   }
 
   async cryptoCurrencyMetadata({
@@ -45,35 +41,27 @@ class CmcService extends Service {
     symbol,
     aux = 'urls,logo,description,tags,platform,date_added,notice',
   }) {
-    try {
-      const res = await this.ctx.curl(
-        'https://pro-api.coinmarketcap.com/v1/cryptocurrency/info', {
-          data: { id, slug, symbol, aux },
-          dataAsQueryString: true,
-          headers: {
-            'X-CMC_PRO_API_KEY': process.env.CMC_PRO_API_KEY,
-          },
-        }
-      );
-      return this.handleResponse(res);
-    } catch (err) {
-      throw err;
-    }
+    const res = await this.ctx.curl(
+      'https://pro-api.coinmarketcap.com/v1/cryptocurrency/info', {
+        data: { id, slug, symbol, aux },
+        dataAsQueryString: true,
+        headers: {
+          'X-CMC_PRO_API_KEY': process.env.CMC_PRO_API_KEY,
+        },
+      }
+    );
+    return this.handleResponse(res);
   }
 
   async keyInfo() {
-    try {
-      const res = await this.ctx.curl(
-        'https://pro-api.coinmarketcap.com/v1/key/info', {
-          headers: {
-            'X-CMC_PRO_API_KEY': process.env.CMC_PRO_API_KEY,
-          },
-        }
-      );
-      return this.handleResponse(res);
-    } catch (err) {
-      throw err;
-    }
+    const res = await this.ctx.curl(
+      'https://pro-api.coinmarketcap.com/v1/key/info', {
+        headers: {
+          'X-CMC_PRO_API_KEY': process.env.CMC_PRO_API_KEY,
+        },
+      }
+    );
+    return this.handleResponse(res);
   }
 }
 

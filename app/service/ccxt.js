@@ -4,202 +4,118 @@ const Service = require('egg').Service;
 
 class CcxtService extends Service {
   exchange() {
-    try {
-      return this.ctx.exchange.describe();
-    } catch (err) {
-      throw err;
-    }
+    return this.ctx.exchange.describe();
   }
 
   checkRequiredCredentials() {
-    try {
-      return this.ctx.exchange.checkRequiredCredentials();
-    } catch (err) {
-      throw err;
-    }
+    return this.ctx.exchange.checkRequiredCredentials();
   }
 
-  async fetchTime() {
-    try {
-      return await this.ctx.exchange.fetchTime();
-    } catch (err) {
-      throw err;
-    }
+  fetchTime() {
+    return this.ctx.exchange.fetchTime();
   }
 
-  async fetchStatus() {
-    try {
-      return await this.ctx.exchange.fetchStatus();
-    } catch (err) {
-      throw err;
-    }
+  fetchStatus() {
+    return this.ctx.exchange.fetchStatus();
   }
 
   async fetchMarket(symbol) {
-    try {
-      return await this.ctx.exchange.market(symbol);
-    } catch (err) {
-      throw err;
-    }
+    await this.ctx.exchange.market(symbol);
   }
 
   fetchMarkets() {
-    try {
-      return this.ctx.exchange.markets;
-    } catch (err) {
-      throw err;
-    }
+    return this.ctx.exchange.markets;
   }
 
   fetchMarketId(symbol) {
-    try {
-      return this.ctx.exchange.marketId(symbol);
-    } catch (err) {
-      throw err;
-    }
+    return this.ctx.exchange.marketId(symbol);
   }
 
   fetchMarketIds(symbols) {
-    try {
-      return this.ctx.exchange.marketIds(symbols);
-    } catch (err) {
-      throw err;
-    }
+    return this.ctx.exchange.marketIds(symbols);
   }
 
   fetchSymbol(symbols) {
-    try {
-      return this.ctx.exchange.symbol(symbols);
-    } catch (err) {
-      throw err;
-    }
+    return this.ctx.exchange.symbol(symbols);
   }
 
   fetchSymbols() {
-    try {
-      return this.ctx.exchange.symbols;
-    } catch (err) {
-      throw err;
-    }
+    return this.ctx.exchange.symbols;
   }
 
   fetchCurrencies() {
-    try {
-      return this.ctx.exchange.currencies;
-    } catch (err) {
-      throw err;
-    }
+    return this.ctx.exchange.currencies;
   }
 
   fetchIds() {
-    try {
-      return this.ctx.exchange.ids;
-    } catch (err) {
-      throw err;
-    }
+    return this.ctx.exchange.ids;
   }
 
-  async fetchOrderBook(symbol) {
-    try {
-      return await this.ctx.exchange.fetchOrderBook(symbol);
-    } catch (err) {
-      throw err;
-    }
+  fetchOrderBook(symbol) {
+    return this.ctx.exchange.fetchOrderBook(symbol, 20);
   }
 
-  async fetchL2OrderBook(symbol) {
-    try {
-      return await this.ctx.exchange.fetchL2OrderBook(symbol);
-    } catch (err) {
-      throw err;
-    }
+  fetchL2OrderBook(symbol) {
+    return this.ctx.exchange.fetchL2OrderBook(symbol, 20);
   }
 
-  async fetchL3OrderBook(symbol) {
-    try {
-      return await this.ctx.exchange.fetchL3OrderBook(symbol);
-    } catch (err) {
-      throw err;
-    }
+  fetchL3OrderBook(symbol) {
+    return this.ctx.exchange.fetchL3OrderBook(symbol, 20);
   }
 
   async fetchDepth(symbol) {
-    try {
-      const result = await this.ctx.exchange.fetchOrderBook(symbol);
-      const { bids, asks } = result;
-      const _bids = [];
-      const _asks = [];
-      for (const bid of bids)
-        _bids.push(
-          bids
-            .filter(v => v[0] <= bid[0])
-            .reduce((p, c) => [ bid[0], c[1] + p[1] ])
-        );
+    const result = await this.ctx.exchange.fetchOrderBook(symbol, 20);
+    const { bids, asks } = result;
+    const _bids = [];
+    const _asks = [];
+    for (const bid of bids)
+      _bids.push(
+        bids
+          .filter(v => v[0] <= bid[0])
+          .reduce((p, c) => [ bid[0], c[1] + p[1] ])
+      );
 
-      for (const ask of asks)
-        _asks.push(
-          asks
-            .filter(v => v[0] <= ask[0])
-            .reduce((p, c) => [ ask[0], c[1] + p[1] ])
-        );
+    for (const ask of asks)
+      _asks.push(
+        asks
+          .filter(v => v[0] <= ask[0])
+          .reduce((p, c) => [ ask[0], c[1] + p[1] ])
+      );
 
-      result.bids = _bids;
-      result.asks = _asks;
+    result.bids = _bids;
+    result.asks = _asks;
 
-      return result;
-    } catch (err) {
-      throw err;
-    }
+    return result;
   }
 
   async fetchPrice(symbol) {
-    try {
-      const { bids, asks } = await this.ctx.exchange.fetchOrderBook(symbol);
-      const bid = bids.length ? bids[0][0] : undefined;
-      const ask = asks.length ? asks[0][0] : undefined;
-      const spread = bid && ask ? ask - bid : undefined;
-      return {
-        bid,
-        ask,
-        spread,
-      };
-    } catch (err) {
-      throw err;
-    }
+    const { bids, asks } = await this.ctx.exchange.fetchOrderBook(symbol, 20);
+    const bid = bids.length ? bids[0][0] : undefined;
+    const ask = asks.length ? asks[0][0] : undefined;
+    const spread = bid && ask ? ask - bid : undefined;
+    return {
+      bid,
+      ask,
+      spread,
+    };
   }
 
   async fetchTicker(symbol, original = false) {
-    try {
-      if (original) return await this.ctx.exchange.fetchTicker(symbol);
-      const result = await this.ctx.exchange.fetchTickers([ symbol ]);
-      return result[symbol];
-    } catch (err) {
-      throw err;
-    }
+    if (original) return await this.ctx.exchange.fetchTicker(symbol);
+    const result = await this.ctx.exchange.fetchTickers([ symbol ]);
+    return result[symbol];
   }
 
-  async fetchTickers(symbols) {
-    try {
-      return await this.ctx.exchange.fetchTickers(symbols);
-    } catch (err) {
-      throw err;
-    }
+  fetchTickers(symbols) {
+    return this.ctx.exchange.fetchTickers(symbols);
   }
 
-  async fetchOHLCV(symbol, period = '1m') {
-    try {
-      return await this.ctx.exchange.fetchOHLCV(symbol, period);
-    } catch (err) {
-      throw err;
-    }
+  fetchOHLCV(symbol, period = '1m') {
+    return this.ctx.exchange.fetchOHLCV(symbol, period);
   }
 
-  async fetchTrades(symbol) {
-    try {
-      return await this.ctx.exchange.fetchTrades(symbol);
-    } catch (err) {
-      throw err;
-    }
+  fetchTrades(symbol) {
+    return this.ctx.exchange.fetchTrades(symbol);
   }
 }
 

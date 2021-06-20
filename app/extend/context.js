@@ -14,6 +14,7 @@ module.exports = {
   onSuccess(data) {
     if (data instanceof CommonResponse) {
       this.body = data;
+      this.status = 200;
       return;
     }
     this.body = new CommonResponse(1, 'Success', data);
@@ -40,6 +41,5 @@ module.exports = {
     }
     this.body = new CommonResponse(0, 'UnexpectedError', null);
     return;
-
   },
 };

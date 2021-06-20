@@ -10,10 +10,9 @@ class CmcController extends Controller {
   async cryptoCurrencyListingsLatest() {
     try {
       const cacheKey = this.getCacheKey(false);
-      const getDataFunction = async () => await this.service.cmc.cryptoCurrencyListingsLatest(this.ctx.query);
-      this.ctx.onSuccess(
-        await this.service.cache.getFromCtx(cacheKey, getDataFunction)
-      );
+      const getDataFunction = () => this.service.cmc.cryptoCurrencyListingsLatest(this.ctx.query);
+      const res = await this.service.cache.getFromCtx(cacheKey, getDataFunction);
+      this.ctx.onSuccess(res);
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -22,10 +21,9 @@ class CmcController extends Controller {
   async cryptoCurrencyMetadata() {
     try {
       const cacheKey = this.getCacheKey(false);
-      const getDataFunction = async () => await this.service.cmc.cryptoCurrencyMetadata(this.ctx.query);
-      this.ctx.onSuccess(
-        await this.service.cache.getFromCtx(cacheKey, getDataFunction)
-      );
+      const getDataFunction = () => this.service.cmc.cryptoCurrencyMetadata(this.ctx.query);
+      const res = await this.service.cache.getFromCtx(cacheKey, getDataFunction);
+      this.ctx.onSuccess(res);
     } catch (err) {
       this.ctx.onError(err);
     }
@@ -34,10 +32,9 @@ class CmcController extends Controller {
   async keyInfo() {
     try {
       const cacheKey = this.getCacheKey(false);
-      const getDataFunction = async () => await this.service.cmc.keyInfo();
-      this.ctx.onSuccess(
-        await this.service.cache.getFromCtx(cacheKey, getDataFunction)
-      );
+      const getDataFunction = () => this.service.cmc.keyInfo();
+      const res = await this.service.cache.getFromCtx(cacheKey, getDataFunction);
+      this.ctx.onSuccess(res);
     } catch (err) {
       this.ctx.onError(err);
     }
