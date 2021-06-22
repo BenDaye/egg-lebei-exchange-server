@@ -11,7 +11,8 @@ class CcxtController extends Controller {
 
   getSymbols(symbols) {
     const _symbols = symbols || this.ctx.queries.symbol;
-    if (!Array.isArray(_symbols)) throw new Error(`${_symbols} can not covert to an valid array`);
+    if (!_symbols) return;
+    if (!Array.isArray(_symbols)) throw new Error(`${_symbols} can not convert to an valid array`);
 
     return _symbols
       ? _symbols.map(this.getSymbol)
